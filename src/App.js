@@ -1,4 +1,3 @@
-import io from 'socket.io-client'
 import { useEffect } from 'react'
 import { Login } from './components/Login';
 import { Chatroom } from './components/Chatroom';
@@ -6,10 +5,6 @@ import { Navbar } from './components/Navbar';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-  // const socket = io('http://127.0.0.1:3001/')
-
-  useEffect(() => {
-  }, []);
 
   return (
     <>
@@ -19,8 +14,8 @@ function App() {
 
         <Routes>
 
-          <Route exact path="/login" element={<Login />} />
-          <Route exact path="/chatroom" element={<Chatroom />} />
+          <Route exact path="/" element={<Login />} />
+          <Route exact path="/chat" element={<Chatroom />} />
         </Routes>
 
       </BrowserRouter>

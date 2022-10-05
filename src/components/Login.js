@@ -1,9 +1,111 @@
-import React from 'react'
+import React, { useState } from 'react'
+import './Login.css'
 
 export const Login = () => {
-  return (
-    <div>
 
+  const [fields, setFields] = useState({
+    email: '',
+    password: ''
+  });
+  const [errors, setErrors] = useState('');
+
+  const handleTextChange = (e) => {
+    setFields({
+      ...fields,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const handleChange = () => {
+
+  }
+
+  const getAuth = async () => {
+    // let res = await fetch('https://notes74.herokuapp.com/api/auth/login', {
+    let res = await fetch('http://localhost:3001/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: fields.email,
+        password: fields.password
+      })
+    })
+    let data = await res.json();
+
+    if (data.err) {
+      handleChange()
+      setErrors(data.err)
+    }
+    else {
+      handleChange()
+      localStorage.setItem('auth-token', data.authToken)
+      window.location.reload()
+    }
+  }
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (isValidEmail(fields.email)) {
+      getAuth()
+    }
+    else {
+      setErrors('Please Enter a valid email')
+    }
+  }
+
+  const isValidEmail = (email) => {
+    var validRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    if (!email.match(validRegex)) {
+      return false
+    }
+    else return true
+  }
+
+  return (
+    <div className="my-container">
+      <div >
+        <div >
+          <div >
+            <div>
+              <h3 className='text-center my-4'>
+                Login
+              </h3>
+            </div>
+            <form>
+
+              <div>
+                {errors.length !== 0 && <div className="alert alert-danger" role="alert">
+                  {errors}
+                </div>
+                }
+                <div className="mb-3">
+                  <label htmlFor="loginEmail" className="form-label">Email</label>
+                  <input name='email' type="text" className="form-control" id="loginEmail" placeholder="Enter Your Email" value={fields.email} required minLength={'4'} onChange={handleTextChange} />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="loginPass" className="form-label">Password</label>
+                  <input name='password' type="password" className="form-control" id="loginPass" placeholder="Enter Your Password" value={fields.password} required minLength={'5'} onChange={handleTextChange} />
+                </div>
+
+              </div>
+              <div className="modal-footer justify-content-center flex-column">
+                <div className="d-grid gap-2 col-6 mx-auto">
+                  <button type="submit" className="btn btn-primary" onClick={handleLogin}>Login</button>
+                </div>
+                <p className='text-center mt-3'>
+
+                  Dont have an account? <button className='border-0 text-primary' onClick={() => {
+                    handleChange();
+                  }}>Signup</button>
+
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

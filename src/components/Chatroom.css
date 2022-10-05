@@ -1,0 +1,38 @@
+.sendIcon {
+  position: absolute;
+  top: 7px;
+  right: 16px;
+  cursor: pointer;
+}
+
+.chat-input {
+  padding: 11px 18px;
+}
+
+.texts-container {
+  height: 34rem;
+}
+
+.texts-div {
+  padding: 20px 30px;
+  overflow-y: scroll;
+}
+
+.textbox {
+  border: 1px solid;
+  display: inline-block;
+  max-width: 508px;
+  padding: 12px;
+  margin: 0.677rem 0;
+}
+
+.sent {
+  background-color: #b8ebff;
+  border-radius: 1rem 1rem 0rem 1rem;
+  max-width: 508px;
+}
+
+.recieved {
+  background-color: #fff;
+  border-radius: 1rem 1rem 1rem 0rem;
+}
