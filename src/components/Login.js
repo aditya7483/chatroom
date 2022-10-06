@@ -5,9 +5,11 @@ export const Login = () => {
 
   const [fields, setFields] = useState({
     email: '',
-    password: ''
+    username: '',
+    password: '',
   });
   const [errors, setErrors] = useState('');
+  const [signup, setSignup] = useState(false);
 
   const handleTextChange = (e) => {
     setFields({
@@ -16,18 +18,16 @@ export const Login = () => {
     })
   }
 
-  const handleChange = () => {
-
-  }
-
-  const getAuth = async () => {
-    // let res = await fetch('https://notes74.herokuapp.com/api/auth/login', {
-    let res = await fetch('http://localhost:3001/api/auth/login', {
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    // let res = await fetch('https://notes74.herokuapp.com/api/auth/signup', {
+    let res = await fetch('http://localhost:3001/api/auth/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        username: fields.username,
         email: fields.email,
         password: fields.password
       })
@@ -39,6 +39,40 @@ export const Login = () => {
       setErrors(data.err)
     }
     else {
+      getAuth()
+    }
+  }
+
+  const handleChange = () => {
+    setFields(
+      {
+        username: '',
+        password: '',
+        email: ''
+      }
+    )
+  }
+
+  const getAuth = async () => {
+    // let res = await fetch('https://notes74.herokuapp.com/api/auth/login', {
+    let res = await fetch('http://localhost:3001/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: fields.username,
+        password: fields.password
+      })
+    })
+    let data = await res.json();
+
+    if (data.err) {
+      handleChange()
+      setErrors(data.err)
+    }
+    else {
+      // console.log(data)
       handleChange()
       localStorage.setItem('auth-token', data.authToken)
       window.location.reload()
@@ -47,11 +81,16 @@ export const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (isValidEmail(fields.email)) {
-      getAuth()
+    if (signup) {
+      if (isValidEmail(fields.email)) {
+        getAuth()
+      }
+      else {
+        setErrors('Please Enter a valid email')
+      }
     }
     else {
-      setErrors('Please Enter a valid email')
+      getAuth()
     }
   }
 
@@ -80,9 +119,16 @@ export const Login = () => {
                   {errors}
                 </div>
                 }
+                {
+                  signup &&
+                  <div className="mb-3">
+                    <label htmlFor="loginEmail" className="form-label">Email</label>
+                    <input name='email' type="email" className="form-control" id="loginEmail" placeholder="Enter Your Email" value={fields.email} required minLength={'4'} onChange={handleTextChange} />
+                  </div>
+                }
                 <div className="mb-3">
-                  <label htmlFor="loginEmail" className="form-label">Email</label>
-                  <input name='email' type="text" className="form-control" id="loginEmail" placeholder="Enter Your Email" value={fields.email} required minLength={'4'} onChange={handleTextChange} />
+                  <label htmlFor="loginUsername" className="form-label">Username</label>
+                  <input name='username' type="text" className="form-control" id="loginUsername" placeholder="Enter Your Username" value={fields.username} required minLength={'4'} onChange={handleTextChange} />
                 </div>
                 <div className="mb-3">
                   <label htmlFor="loginPass" className="form-label">Password</label>
@@ -91,14 +137,32 @@ export const Login = () => {
 
               </div>
               <div className="modal-footer justify-content-center flex-column">
-                <div className="d-grid gap-2 col-6 mx-auto">
-                  <button type="submit" className="btn btn-primary" onClick={handleLogin}>Login</button>
-                </div>
+                {
+                  !signup ? <div className="d-grid gap-2 col-6 mx-auto">
+                    <button type="submit" className="btn btn-primary" onClick={handleLogin}>Login</button>
+                  </div>
+                    :
+                    <div className="d-grid gap-2 col-6 mx-auto">
+                      <button type="submit" className="btn btn-primary" onClick={handleSignup}>Signup</button>
+                    </div>
+                }
                 <p className='text-center mt-3'>
 
-                  Dont have an account? <button className='border-0 text-primary' onClick={() => {
-                    handleChange();
-                  }}>Signup</button>
+                  {
+                    !signup ?
+                      <>
+                        Dont have an account? <button className='border-0 text-primary' onClick={() => {
+                          setSignup(true)
+                          handleChange();
+                        }}>Signup</button>
+                      </> :
+                      <>
+                        Already have an account? <button className='border-0 text-primary' onClick={() => {
+                          setSignup(false)
+                          handleChange();
+                        }}>Login</button>
+                      </>
+                  }
 
                 </p>
               </div>

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import io from 'socket.io-client'
 import SendIcon from '@mui/icons-material/Send';
-import { FormControl, TextField } from '@mui/material';
 import './Chatroom.css'
+import { useNavigate } from 'react-router-dom';
 
-const link = 'http://127.0.0.1:3001/'
+const link = 'http://127.0.0.1:3001'
 
 export const Chatroom = () => {
 
@@ -14,27 +14,71 @@ export const Chatroom = () => {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState({});
   const [selectedUser, setSelectedUser] = useState({});
+  const [globalUsers, setGlobalUsers] = useState([]);
 
   const socket = io(link)
+  let authToken = window.localStorage.getItem('auth-token')
+  let nav = useNavigate()
 
-  const fetchData = async () => {
+
+  const fetchTexts = async (username) => {
     {
-      let res = await fetch(`${link}/api/texts/getTexts`)
-      let jsonres = await res.json();
-      setData(jsonres.data);
+      try {
+        let res = await fetch(`${link}/api/chat/getTexts`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': "application/json",
+            'auth-token': authToken
+          },
+          body: JSON.stringify({
+            from: userData.username,
+            to: username
+          })
+        })
+        let jsonres = await res.json();
+        setSelectedUser(username)
+        setData(jsonres.data);
+        console.log(jsonres)
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 
-  useEffect(() => {
-    setLoading(true)
-    fetch(`${link}/api/user/getUser`, {
-      method: 'GET',
-      body: {
-        'Content-Type': "application/json",
+  const fetchUserData = async () => {
+    try {
+      let res = await fetch(`${link}/api/auth/getUser`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': "application/json",
+          'auth-token': authToken
+        }
+      })
+      let data = await res.json();
+      setUserData(data);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const fetchGlobalUsers = async () => {
+    try {
+      let res = await fetch(`${link}/api/auth/getGlobalUsers`)
+      let data = await res.json();
+      setGlobalUsers(data);
+    } catch (err) { console.log(err) }
+  }
 
-      }
-    })
-    setLoading(false)
+  useEffect(() => {
+
+    if (!authToken || authToken === 'undefined') {
+      nav('/')
+    }
+    else {
+      setLoading(true)
+      fetchUserData()
+      fetchGlobalUsers()
+      setLoading(false)
+    }
   }, []);
 
   socket.on('messageError', (err) => {
@@ -45,46 +89,47 @@ export const Chatroom = () => {
     setMess(e.target.value)
   }
 
-  const handleSend = () => {
+  const handleSend = (e) => {
+    e.preventDefault()
     let newData = {
-      from: 'todo',
-      to: 'todo',
+      from: userData.username,
+      to: selectedUser.username,
       message: mess,
-      time: Date.now()
+      time: Date.now(),
+      _id: Math.random().toString()
     }
     setData(data.concat(newData))
+    setMess('')
     socket.emit('messageSent', newData)
   }
 
   return (
     <div className="container-fluid">
       <div className='d-flex flex-row justify-content-around'>
-        <div className="col-sm-3 " style={{ border: '1px solid' }}>
 
+        {/* profiles container */}
+        <div className="col-sm-3 " style={{ border: '1px solid' }}>
+          {
+            globalUsers.map((ele) => {
+              return <div className="profile-container" key={ele._id} onClick={() => { fetchTexts(ele.username) }}>
+                {ele.username}
+              </div>
+            })
+          }
         </div>
+
+        {/* Texts container */}
         <div className="col texts-container" style={{ border: '1px solid' }}>
 
           <div className='texts-div d-flex flex-column' style={{ border: '1px solid', height: '90%' }}>
-            <div className="recieved textbox">
-              <p className='mb-0'>
-                Lorem ipsum dolor, sit amet consectetur Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam quia incidunt consectetur voluptas natus. adipisicing elit. Aut et quod nemo mollitia suscipit cupiditate animi accusamus.
-              </p>
-            </div>
-            <div className="sent align-self-end textbox">
-              <p className='mb-0'>
-                Lorem ipsum dolor, sit amet consectetur Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam quia incidunt consectetur voluptas natus. adipisicing elit. Aut et quod nemo mollitia suscipit cupiditate animi accusamus.
-              </p>
-            </div>
-            <div className="sent align-self-end textbox">
-              <p className='mb-0'>
-                Lorem ipsum dolor, sit amet consectetur Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam quia incidunt consectetur voluptas natus. adipisicing elit. Aut et quod nemo mollitia suscipit cupiditate animi accusamus.
-              </p>
-            </div>
-            <div className="sent align-self-end textbox">
-              <p className='mb-0'>
-                Lorem ipsum dolor, sit amet consectetur Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam quia incidunt consectetur voluptas natus. adipisicing elit. Aut et quod nemo mollitia suscipit cupiditate animi accusamus.
-              </p>
-            </div>
+            {data.map(ele => {
+              return <div key={ele._id} className={ele.from === userData.username ? "sent align-self-end textbox" : 'recieved align-self-start textbox'}>
+                <p className='mb-0'>
+                  {ele.message}
+                </p>
+              </div>
+            })
+            }
           </div>
 
           <div>
