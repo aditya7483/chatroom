@@ -93,7 +93,7 @@ export const Chatroom = () => {
     e.preventDefault()
     let newData = {
       from: userData.username,
-      to: selectedUser.username,
+      to: selectedUser,
       message: mess,
       time: Date.now(),
       _id: Math.random().toString()
