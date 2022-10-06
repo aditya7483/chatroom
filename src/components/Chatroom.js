@@ -13,7 +13,7 @@ export const Chatroom = () => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState({});
-  const [selectedUser, setSelectedUser] = useState({});
+  const [selectedUser, setSelectedUser] = useState('');
   const [globalUsers, setGlobalUsers] = useState([]);
 
   const socket = io(link)
@@ -80,6 +80,12 @@ export const Chatroom = () => {
       setLoading(false)
     }
   }, []);
+
+  socket.on('messageRecieve', (obj) => {
+    if (obj.to === userData.username && obj.from === selectedUser) {
+      setData(data.concat(obj))
+    }
+  })
 
   socket.on('messageError', (err) => {
     setError(true)
