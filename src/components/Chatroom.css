@@ -10,7 +10,7 @@
 }
 
 .texts-container {
-  height: 34rem;
+  height: 33.5rem;
 }
 
 .texts-div {
@@ -38,7 +38,20 @@
 }
 
 .profile-container {
+  display: flex;
+  align-items: center;
+  justify-content: start;
   padding: 16px 1px 16px 11px;
   box-shadow: 0px 1px 3px 0px grey;
   cursor: pointer;
+}
+
+.global-user-heading {
+  padding: 11px 0;
+  background: #4d4d4d;
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
 }

@@ -1,3 +1,4 @@
+import { Backdrop, CircularProgress } from '@mui/material';
 import React, { useState } from 'react'
 import './Login.css'
 
@@ -10,6 +11,7 @@ export const Login = () => {
   });
   const [errors, setErrors] = useState('');
   const [signup, setSignup] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleTextChange = (e) => {
     setFields({
@@ -83,13 +85,16 @@ export const Login = () => {
     e.preventDefault();
     if (signup) {
       if (isValidEmail(fields.email)) {
+        setLoading(true);
         getAuth()
       }
       else {
+        setLoading(false)
         setErrors('Please Enter a valid email')
       }
     }
     else {
+      setLoading(true)
       getAuth()
     }
   }
@@ -104,6 +109,12 @@ export const Login = () => {
 
   return (
     <div className="my-container">
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <div >
         <div >
           <div >
