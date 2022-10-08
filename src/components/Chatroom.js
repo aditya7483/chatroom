@@ -4,10 +4,17 @@ import SendIcon from '@mui/icons-material/Send';
 import './Chatroom.css'
 import { useNavigate } from 'react-router-dom';
 import { Avatar, CircularProgress } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { actionCreators } from '../states'
 
 const link = 'http://127.0.0.1:3001'
 
 export const Chatroom = () => {
+
+  const selectedUser = useSelector(state => state.selectedUser)
+  const dispatch = useDispatch()
+  const { setSelectedUser } = bindActionCreators(actionCreators, dispatch)
 
   const [mess, setMess] = useState('')
   const [data, setData] = useState([]);
@@ -15,7 +22,7 @@ export const Chatroom = () => {
   const [loading, setLoading] = useState(false);
   const [textLoading, setTextLoading] = useState(false);
   const [userData, setUserData] = useState({});
-  const [selectedUser, setSelectedUser] = useState('');
+  // const [selectedUser, setSelectedUser] = useState('');
   const [globalUsers, setGlobalUsers] = useState([]);
 
   const socket = io(link)
@@ -26,6 +33,7 @@ export const Chatroom = () => {
   const fetchTexts = async (username) => {
     {
       setTextLoading(true)
+      setData([])
       try {
         let res = await fetch(`${link}/api/chat/getTexts`, {
           method: 'POST',
@@ -67,7 +75,14 @@ export const Chatroom = () => {
   }
   const fetchGlobalUsers = async () => {
     try {
-      let res = await fetch(`${link}/api/auth/getGlobalUsers`)
+      let res = await fetch(`${link}/api/auth/getGlobalUsers`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            'auth-token': authToken
+          }
+        })
       let data = await res.json();
       setGlobalUsers(data);
     } catch (err) { console.log(err) }
@@ -94,6 +109,7 @@ export const Chatroom = () => {
 
   socket.on('messageError', (err) => {
     setError(true)
+    console.log(err)
   })
 
   const handleTextChange = (e) => {
