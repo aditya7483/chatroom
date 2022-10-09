@@ -28,16 +28,24 @@
 
 .sent {
   background-color: #b8ebff;
-  border-radius: 1rem 1rem 0rem 1rem;
+  border-radius: 0.7rem 0.7rem 0rem 0.7rem;
   max-width: 508px;
 }
 
 .recieved {
   background-color: #fff;
-  border-radius: 1rem 1rem 1rem 0rem;
+  border-radius: 0.7rem 0.7rem 0.7rem 0rem;
 }
 
 .profile-container {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding: 16px 1px 16px 11px;
+  box-shadow: 0px 1px 3px 0px grey;
+  cursor: pointer;
+}
+.profile-container-top {
   display: flex;
   align-items: center;
   justify-content: start;
@@ -50,6 +58,10 @@
   padding: 11px 0;
   background: #4d4d4d;
   color: white;
+}
+
+.send-div {
+  top: -72px;
 }
 
 ::-webkit-scrollbar {
@@ -76,8 +88,12 @@
     padding: 9px 0;
   }
 
-  .profile-container {
+  .profile-container-top {
     padding: 4px 1px 5px 6px;
+  }
+
+  .send-div {
+    top: -48px;
   }
 
   .textbox {

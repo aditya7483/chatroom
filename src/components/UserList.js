@@ -1,4 +1,4 @@
-import { Avatar, SwipeableDrawer } from '@mui/material'
+import { Avatar } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -16,7 +16,7 @@ export const UserList = ({ drawerStatus }) => {
   const { setSelectedUser, getGlobalUsers } = bindActionCreators(actionCreators, dispatch)
 
   useEffect(() => {
-    if (globalUsers.length === 0) { getGlobalUsers(`http://127.0.0.1:3001/api/auth/getGlobalUsers`, authToken) }
+    if (globalUsers.length === 0) { getGlobalUsers(`https://chat74.herokuapp.com/api/auth/getGlobalUsers`, authToken) }
     else {
       setDrawer(drawerStatus)
     }
@@ -61,7 +61,10 @@ export const UserList = ({ drawerStatus }) => {
         <div style={{ overflowY: 'scroll' }}>
           {
             globalUsers.map((ele) => {
-              return <div className="profile-container" key={ele._id} onClick={() => { setSelectedUser(ele.username) }}>
+              return <div className="profile-container" key={ele._id} onClick={() => {
+                setSelectedUser(ele.username)
+                setDrawer(false)
+              }}>
                 <Avatar {...stringAvatar(`${ele.username}`)} />
                 <p className='mb-0 mx-3'>
                   {ele.username}

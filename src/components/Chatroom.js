@@ -8,7 +8,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { actionCreators } from '../states'
 
-const link = 'http://127.0.0.1:3001'
+// const link = 'http://127.0.0.1:3001'
+const link = 'https://chat74.herokuapp.com'
 
 export const Chatroom = () => {
 
@@ -37,7 +38,7 @@ export const Chatroom = () => {
       setTextLoading(true)
       setData([])
       try {
-        let res = await fetch(`${link}/api/chat/getTexts`, {
+        let res = await fetch(`https://chat74.herokuapp.com/api/chat/getTexts`, {
           method: 'POST',
           headers: {
             'Content-Type': "application/json",
@@ -62,7 +63,7 @@ export const Chatroom = () => {
 
   const fetchUserData = async () => {
     try {
-      let res = await fetch(`${link}/api/auth/getUser`, {
+      let res = await fetch(`https://chat74.herokuapp.com/api/auth/getUser`, {
         method: 'GET',
         headers: {
           'Content-Type': "application/json",
@@ -77,7 +78,7 @@ export const Chatroom = () => {
   }
   const fetchGlobalUsers = async () => {
     try {
-      let res = await fetch(`${link}/api/auth/getGlobalUsers`,
+      let res = await fetch(`https://chat74.herokuapp.com/api/auth/getGlobalUsers`,
         {
           method: "GET",
           headers: {
@@ -142,8 +143,8 @@ export const Chatroom = () => {
     }
     setData(data.concat(newData))
     // bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-    var objDiv = document.getElementById("texts-div");
-    objDiv.scrollTop = objDiv.scrollHeight;
+    // var objDiv = document.getElementById("texts-div");
+    // objDiv.scrollTop = objDiv.scrollHeight;
     setMess('')
     socket.emit('messageSent', newData)
   }
@@ -209,7 +210,7 @@ export const Chatroom = () => {
 
         {/* Texts container */}
         <div className="col texts-container" style={{ border: '1px solid' }}>
-          {selectedUser.length !== 0 && <div className="profile-container position-sticky">
+          {selectedUser.length !== 0 && <div className="profile-container-top position-sticky">
             <Avatar {...stringAvatar(`${selectedUser}`)} />
             <p className='mb-0 mx-3'>
               {selectedUser}
@@ -230,16 +231,16 @@ export const Chatroom = () => {
           </div>
 
           {
-            selectedUser.length !== 0 && <div>
-              <div className="position-relative">
-                <form onSubmit={handleSend}>
-                  <input type="text" className="form-control chat-input" placeholder="Send Message" value={mess} onChange={handleTextChange} />
-                </form>
-                <div className="sendIcon" onClick={handleSend}>
-                  <SendIcon color={mess.length > 0 ? "primary" : "disabled"} />
-                </div>
+            selectedUser.length !== 0 &&
+            <div className="position-relative send-div">
+              <form onSubmit={handleSend}>
+                <input type="text" className="form-control chat-input" placeholder="Send Message" value={mess} onChange={handleTextChange} />
+              </form>
+              <div className="sendIcon" onClick={handleSend}>
+                <SendIcon color={mess.length > 0 ? "primary" : "disabled"} />
               </div>
             </div>
+
           }
         </div>
       </div>

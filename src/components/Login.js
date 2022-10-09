@@ -23,8 +23,8 @@ export const Login = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true)
-    // let res = await fetch('https://notes74.herokuapp.com/api/auth/signup', {
-    let res = await fetch('http://localhost:3001/api/auth/signup', {
+    let res = await fetch('https://chat74.herokuapp.com/api/auth/signup', {
+      // let res = await fetch('http://localhost:3001/api/auth/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -60,7 +60,7 @@ export const Login = () => {
   const getAuth = async () => {
     // let res = await fetch('https://notes74.herokuapp.com/api/auth/login', {
     try {
-      let res = await fetch('http://localhost:3001/api/auth/login', {
+      let res = await fetch('https://chat74.herokuapp.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

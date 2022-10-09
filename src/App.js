@@ -12,7 +12,7 @@ function App() {
   useEffect(() => {
     let authToken = window.localStorage.getItem('auth-token')
     if (authToken && authToken !== 'undefined') {
-      fetch(`${link}/api/auth/getUser`, {
+      fetch(`https://chat74.herokuapp.com/api/auth/getUser`, {
         method: 'GET',
         headers: {
           'Content-Type': "application/json",
