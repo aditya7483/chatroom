@@ -1,11 +1,16 @@
-import { AppBar, Backdrop, Box, CircularProgress, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material'
+import { AppBar, Avatar, Backdrop, Box, CircularProgress, IconButton, Menu, MenuItem, SwipeableDrawer, Toolbar, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu'
+import { UserList } from './UserList';
+import './Navbar.css'
+
 
 export const Navbar = () => {
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [backdrop, setBackdrop] = useState(false);
+  const [drawer, setDrawer] = useState(false);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -32,17 +37,23 @@ export const Navbar = () => {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-            >
-              <MenuIcon />
-            </IconButton>
+
+            <div className='sm-dev' onClick={() => {
+              setDrawer(drawer ? false : true)
+            }}>
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                sx={{ mr: 2 }}
+              >
+
+                <MenuIcon />
+              </IconButton>
+            </div>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              News
+              CHATROOM
             </Typography>
             <div>
               <IconButton
@@ -76,6 +87,7 @@ export const Navbar = () => {
           </Toolbar>
         </AppBar>
       </Box>
-    </div>
+      <UserList drawerStatus={drawer} />
+    </div >
   )
 }

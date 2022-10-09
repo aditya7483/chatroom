@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import io from 'socket.io-client'
 import SendIcon from '@mui/icons-material/Send';
 import './Chatroom.css'
@@ -15,6 +15,8 @@ export const Chatroom = () => {
   const selectedUser = useSelector(state => state.selectedUser)
   const dispatch = useDispatch()
   const { setSelectedUser } = bindActionCreators(actionCreators, dispatch)
+
+  const bottomRef = useRef(null)
 
   const [mess, setMess] = useState('')
   const [data, setData] = useState([]);
@@ -94,17 +96,30 @@ export const Chatroom = () => {
       nav('/')
     }
     else {
-      setLoading(true)
-      fetchUserData()
-      fetchGlobalUsers()
-      setLoading(false)
+      if (selectedUser === '') {
+        setLoading(true)
+        fetchUserData()
+        fetchGlobalUsers()
+        setLoading(false)
+      }
+      else {
+        fetchTexts(selectedUser)
+      }
     }
-  }, []);
+  }, [selectedUser]);
+
+  const changeAlert = (obj, val) => {
+    let index = globalUsers.findIndex((ele) => { return ele.username === obj.to })
+    let newObj = globalUsers;
+    newObj[index].messAlert = val;
+    setGlobalUsers(newObj);
+  }
 
   socket.on('messageRecieve', (obj) => {
     if (obj.to === userData.username && obj.from === selectedUser) {
       setData(data.concat(obj))
     }
+    // changeAlert(obj, true)
   })
 
   socket.on('messageError', (err) => {
@@ -126,6 +141,9 @@ export const Chatroom = () => {
       _id: Math.random().toString()
     }
     setData(data.concat(newData))
+    // bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    var objDiv = document.getElementById("texts-div");
+    objDiv.scrollTop = objDiv.scrollHeight;
     setMess('')
     socket.emit('messageSent', newData)
   }
@@ -164,7 +182,7 @@ export const Chatroom = () => {
       <div className='d-flex flex-row justify-content-around'>
 
         {/* profiles container */}
-        <div className="col-sm-3 " style={{ border: '1px solid' }}>
+        <div className="col-sm-3 bg-dev" style={{ border: '1px solid' }}>
           <div className="global-user-heading text-center">
             <h5>Global Users</h5>
           </div>
@@ -179,6 +197,10 @@ export const Chatroom = () => {
                   <p className='mb-0 mx-3'>
                     {ele.username}
                   </p>
+                  {/* {ele.messAlert && <span className="badge rounded-pill bg-danger" style={{ marginLeft: 'auto', marginRight: '0.7rem' }}>
+                    {" "}
+                    <span className="visually-hidden">unread messages</span>
+                  </span>} */}
                 </div>
               })
             }
@@ -187,7 +209,13 @@ export const Chatroom = () => {
 
         {/* Texts container */}
         <div className="col texts-container" style={{ border: '1px solid' }}>
-          <div className='texts-div d-flex flex-column' style={{ height: '90%' }}>
+          {selectedUser.length !== 0 && <div className="profile-container position-sticky">
+            <Avatar {...stringAvatar(`${selectedUser}`)} />
+            <p className='mb-0 mx-3'>
+              {selectedUser}
+            </p>
+          </div>}
+          <div className='texts-div d-flex flex-column' ref={bottomRef} style={{ height: '90%' }}>
             {textLoading && <div className="text-center">
               {<CircularProgress color="success" />}
             </div>}
@@ -201,16 +229,18 @@ export const Chatroom = () => {
             }
           </div>
 
-          <div>
-            <div className="position-relative">
-              <form onSubmit={handleSend}>
-                <input type="text" className="form-control chat-input" placeholder="Send Message" value={mess} onChange={handleTextChange} />
-              </form>
-              <div className="sendIcon" onClick={handleSend}>
-                <SendIcon color={mess.length > 0 ? "primary" : "disabled"} />
+          {
+            selectedUser.length !== 0 && <div>
+              <div className="position-relative">
+                <form onSubmit={handleSend}>
+                  <input type="text" className="form-control chat-input" placeholder="Send Message" value={mess} onChange={handleTextChange} />
+                </form>
+                <div className="sendIcon" onClick={handleSend}>
+                  <SendIcon color={mess.length > 0 ? "primary" : "disabled"} />
+                </div>
               </div>
             </div>
-          </div>
+          }
         </div>
       </div>
     </div>

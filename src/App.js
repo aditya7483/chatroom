@@ -7,11 +7,29 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 function App() {
 
   let nav = useNavigate()
+  const link = 'http://localhost:3001'
 
   useEffect(() => {
     let authToken = window.localStorage.getItem('auth-token')
     if (authToken && authToken !== 'undefined') {
-      nav('/chat')
+      fetch(`${link}/api/auth/getUser`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': "application/json",
+          'auth-token': authToken
+        }
+      }).then(res => {
+        return res.json()
+      })
+        .then(data => {
+          console.log(data)
+          nav('/chat')
+        })
+        .catch(err => {
+          window.localStorage.removeItem('auth-token')
+          window.location.reload()
+          window.alert('Session Expired !! Please login again')
+        })
     }
   }, []);
 

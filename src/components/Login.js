@@ -22,6 +22,7 @@ export const Login = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setLoading(true)
     // let res = await fetch('https://notes74.herokuapp.com/api/auth/signup', {
     let res = await fetch('http://localhost:3001/api/auth/signup', {
       method: 'POST',
@@ -39,6 +40,7 @@ export const Login = () => {
     if (data.err) {
       handleChange()
       setErrors(data.err)
+      setLoading(false)
     }
     else {
       getAuth()
@@ -57,27 +59,33 @@ export const Login = () => {
 
   const getAuth = async () => {
     // let res = await fetch('https://notes74.herokuapp.com/api/auth/login', {
-    let res = await fetch('http://localhost:3001/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        username: fields.username,
-        password: fields.password
+    try {
+      let res = await fetch('http://localhost:3001/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: fields.username,
+          password: fields.password
+        })
       })
-    })
-    let data = await res.json();
+      let data = await res.json();
 
-    if (data.err) {
-      handleChange()
-      setErrors(data.err)
+      if (data.err) {
+        handleChange()
+        setErrors(data.err)
+        setLoading(false)
+      }
+      else {
+        // console.log(data)
+        handleChange()
+        localStorage.setItem('auth-token', data.authToken)
+        window.location.reload()
+      }
     }
-    else {
-      // console.log(data)
-      handleChange()
-      localStorage.setItem('auth-token', data.authToken)
-      window.location.reload()
+    catch (err) {
+      setLoading(false)
     }
   }
 

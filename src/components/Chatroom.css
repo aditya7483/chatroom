@@ -55,3 +55,42 @@
 ::-webkit-scrollbar {
   width: 8px;
 }
+
+@media screen and (max-width: 560px) {
+  ::placeholder {
+    font-size: 14px;
+  }
+
+  .chat-input {
+    font-size: 14px;
+  }
+
+  .bg-dev {
+    display: none;
+  }
+
+  .global-user-heading > h5 {
+    font-size: 1rem;
+  }
+  .global-user-heading {
+    padding: 9px 0;
+  }
+
+  .profile-container {
+    padding: 4px 1px 5px 6px;
+  }
+
+  .textbox {
+    padding: 6px;
+  }
+
+  .textbox > p {
+    font-size: 14px;
+  }
+  .sent {
+    border-radius: 10px 10px 0 10px;
+  }
+  .recieved {
+    border-radius: 10px 10px 10px 0;
+  }
+}

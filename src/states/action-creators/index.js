@@ -6,6 +6,14 @@ export const setSelectedUser = (userData) => {
     })
   }
 }
+export const setTextLoading = (val) => {
+  return (dispatch) => {
+    dispatch({
+      type: 'setTextLoading',
+      payload: val
+    })
+  }
+}
 
 export const getData = (url) => {
   return async (dispatch) => {
@@ -13,6 +21,25 @@ export const getData = (url) => {
     dispatch(getDataBegin())
     try {
       const res = await fetch(url)
+      const data = await res.json()
+      dispatch(getDataSuccess(data))
+    } catch (err) {
+      dispatch(getDataFailure(err))
+    }
+  }
+}
+export const getGlobalUsers = (url, authToken) => {
+  return async (dispatch) => {
+
+    dispatch(getDataBegin())
+    try {
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          'Content-Type': "application/json",
+          "auth-token": authToken
+        }
+      })
       const data = await res.json()
       dispatch(getDataSuccess(data))
     } catch (err) {

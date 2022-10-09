@@ -1,0 +1,44 @@
+.texts-container {
+  height: 33.5rem;
+}
+
+.users-closed {
+  display: none;
+}
+
+.users-open {
+  transition: left 0.2s linear;
+  width: 70%;
+  position: absolute;
+  z-index: 1000;
+  height: 100vh;
+  background-color: white;
+}
+
+.texts-div {
+  padding: 20px 30px;
+  overflow-y: scroll;
+}
+
+.profile-container {
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding: 16px 1px 16px 11px;
+  box-shadow: 0px 1px 3px 0px grey;
+  cursor: pointer;
+}
+
+.global-user-heading {
+  padding: 11px 0;
+  background: #4d4d4d;
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+@media screen and (max-width: 560px) {
+}

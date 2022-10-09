@@ -1,0 +1,9 @@
+.sm-dev {
+  display: none;
+}
+
+@media screen and (max-width: 560px) {
+  .sm-dev {
+    display: initial;
+  }
+}
