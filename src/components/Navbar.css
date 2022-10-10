@@ -6,4 +6,8 @@
   .sm-dev {
     display: initial;
   }
+
+  .nav-heading {
+    font-size: 1rem !important;
+  }
 }

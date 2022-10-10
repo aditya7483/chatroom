@@ -61,7 +61,7 @@ export const UserList = ({ drawerStatus }) => {
         <div style={{ overflowY: 'scroll' }}>
           {
             globalUsers.map((ele) => {
-              return <div className="profile-container" key={ele._id} onClick={() => {
+              return <div className="profile-container-nav" key={ele._id} onClick={() => {
                 setSelectedUser(ele.username)
                 setDrawer(false)
               }}>

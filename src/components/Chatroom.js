@@ -211,7 +211,7 @@ export const Chatroom = () => {
         {/* Texts container */}
         <div className="col texts-container" style={{ border: '1px solid' }}>
           {selectedUser.length !== 0 && <div className="profile-container-top position-sticky">
-            <Avatar {...stringAvatar(`${selectedUser}`)} />
+            <Avatar {...stringAvatar(`${selectedUser}`)} className={'avatar'} />
             <p className='mb-0 mx-3'>
               {selectedUser}
             </p>
@@ -220,6 +220,12 @@ export const Chatroom = () => {
             {textLoading && <div className="text-center">
               {<CircularProgress color="success" />}
             </div>}
+            {selectedUser.length === 0 &&
+              <div className="text-center m-auto">
+                <h5>WELCOME</h5>
+                <p style={{ color: 'dimgray' }}>Please select a user to connect with them</p>
+              </div>
+            }
             {data.map(ele => {
               return <div key={ele._id} className={ele.from === userData.username ? "sent align-self-end textbox" : 'recieved align-self-start textbox'}>
                 <p className='mb-0'>

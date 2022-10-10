@@ -16,6 +16,7 @@
 .texts-div {
   padding: 20px 30px;
   overflow-y: scroll;
+  background-image: url("../assets/istockphoto-629531868-170667a.jpg");
 }
 
 .textbox {
@@ -89,11 +90,15 @@
   }
 
   .profile-container-top {
-    padding: 4px 1px 5px 6px;
+    padding: 8px 1px 8px 6px;
   }
 
   .send-div {
     top: -48px;
+  }
+
+  .texts-div {
+    padding: 4px 6px;
   }
 
   .textbox {
@@ -108,5 +113,9 @@
   }
   .recieved {
     border-radius: 10px 10px 10px 0;
+  }
+  .avatar {
+    width: 30px;
+    height: 30px;
   }
 }

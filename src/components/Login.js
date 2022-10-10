@@ -23,31 +23,37 @@ export const Login = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true)
-    let res = await fetch('https://chat74.herokuapp.com/api/auth/signup', {
-      // let res = await fetch('http://localhost:3001/api/auth/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        username: fields.username,
-        email: fields.email,
-        password: fields.password
-      })
-    })
-    let data = await res.json();
-
-    if (data.err) {
-      handleChange()
-      setErrors(data.err)
+    if (fields.username.length < 5 || fields.username.length < 5) {
+      setErrors('The username and password must contain atleast 5 characters')
       setLoading(false)
     }
     else {
-      getAuth()
+      let res = await fetch('https://chat74.herokuapp.com/api/auth/signup', {
+        // let res = await fetch('http://localhost:3001/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: fields.username,
+          email: fields.email,
+          password: fields.password
+        })
+      })
+      let data = await res.json();
+
+      if (data.err) {
+        setErrors(data.err)
+        setLoading(false)
+      }
+      else {
+        getAuth()
+      }
     }
   }
 
   const handleChange = () => {
+    setErrors('')
     setFields(
       {
         username: '',
@@ -116,7 +122,7 @@ export const Login = () => {
   }
 
   return (
-    <div className="my-container">
+    <div className="my-container" style={{ padding: '0 1rem' }}>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
@@ -128,7 +134,7 @@ export const Login = () => {
           <div >
             <div>
               <h3 className='text-center my-4'>
-                Login
+                {signup ? 'Signup' : 'Login'}
               </h3>
             </div>
             <form>
@@ -142,7 +148,7 @@ export const Login = () => {
                   signup &&
                   <div className="mb-3">
                     <label htmlFor="loginEmail" className="form-label">Email</label>
-                    <input name='email' type="email" className="form-control" id="loginEmail" placeholder="Enter Your Email" value={fields.email} required minLength={'4'} onChange={handleTextChange} />
+                    <input name='email' className="form-control" id="loginEmail" placeholder="Enter Your Email" value={fields.email} required minLength={'4'} onChange={handleTextChange} />
                   </div>
                 }
                 <div className="mb-3">

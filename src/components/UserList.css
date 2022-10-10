@@ -15,18 +15,13 @@
   background-color: white;
 }
 
-.texts-div {
-  padding: 20px 30px;
-  overflow-y: scroll;
-}
-
-.profile-container {
+.profile-container-nav {
   background: white;
   display: flex;
   align-items: center;
   justify-content: start;
   padding: 16px 1px 16px 11px;
-  box-shadow: 0px 1px 3px 0px grey;
+  border-bottom: 1px solid darkgrey;
   cursor: pointer;
 }
 

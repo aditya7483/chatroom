@@ -52,9 +52,11 @@ export const Navbar = () => {
                 <MenuIcon />
               </IconButton>
             </div>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            {/* <div className='nav-heading'> */}
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} className='nav-heading'>
               CHATROOM
             </Typography>
+            {/* </div> */}
             <div>
               <IconButton
                 size="large"
