@@ -13,6 +13,10 @@
   height: 33.5rem;
 }
 
+#texts-div {
+  height: 77%;
+}
+
 .texts-div {
   padding: 20px 30px;
   overflow-y: scroll;
@@ -61,10 +65,6 @@
   color: white;
 }
 
-.send-div {
-  top: -72px;
-}
-
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -72,6 +72,10 @@
 @media screen and (max-width: 560px) {
   ::placeholder {
     font-size: 14px;
+  }
+
+  #texts-div {
+    height: 80%;
   }
 
   .chat-input {
@@ -91,10 +95,6 @@
 
   .profile-container-top {
     padding: 8px 1px 8px 6px;
-  }
-
-  .send-div {
-    top: -48px;
   }
 
   .texts-div {

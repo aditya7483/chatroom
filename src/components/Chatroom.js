@@ -109,6 +109,12 @@ export const Chatroom = () => {
     }
   }, [selectedUser]);
 
+  const handleUserClick = (username) => {
+    fetchTexts(username)
+    let obj = { to: username }
+    changeAlert(obj, false)
+  }
+
   const changeAlert = (obj, val) => {
     let index = globalUsers.findIndex((ele) => { return ele.username === obj.to })
     let newObj = globalUsers;
@@ -120,7 +126,9 @@ export const Chatroom = () => {
     if (obj.to === userData.username && obj.from === selectedUser) {
       setData(data.concat(obj))
     }
-    // changeAlert(obj, true)
+    else {
+      changeAlert(obj, true)
+    }
   })
 
   socket.on('messageError', (err) => {
@@ -143,8 +151,8 @@ export const Chatroom = () => {
     }
     setData(data.concat(newData))
     // bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-    // var objDiv = document.getElementById("texts-div");
-    // objDiv.scrollTop = objDiv.scrollHeight;
+    var objDiv = document.getElementById("texts-div");
+    objDiv.scrollTop = objDiv.scrollHeight;
     setMess('')
     socket.emit('messageSent', newData)
   }
@@ -193,15 +201,15 @@ export const Chatroom = () => {
           <div style={{ overflowY: 'scroll' }}>
             {
               globalUsers.map((ele) => {
-                return <div className="profile-container" key={ele._id} onClick={() => { fetchTexts(ele.username) }}>
+                return <div className="profile-container" key={ele._id} onClick={() => { handleUserClick(ele.username) }}>
                   <Avatar {...stringAvatar(`${ele.username}`)} />
                   <p className='mb-0 mx-3'>
                     {ele.username}
                   </p>
-                  {/* {ele.messAlert && <span className="badge rounded-pill bg-danger" style={{ marginLeft: 'auto', marginRight: '0.7rem' }}>
+                  {ele.messAlert && <span className=" p-2 bg-success border border-light rounded-circle" style={{ marginLeft: 'auto', marginRight: '0.7rem' }}>
                     {" "}
-                    <span className="visually-hidden">unread messages</span>
-                  </span>} */}
+                    <span className="visually-hidden">New alerts</span>
+                  </span>}
                 </div>
               })
             }
@@ -216,7 +224,7 @@ export const Chatroom = () => {
               {selectedUser}
             </p>
           </div>}
-          <div className='texts-div d-flex flex-column' ref={bottomRef} style={{ height: '90%' }}>
+          <div id='texts-div' className='texts-div d-flex flex-column'>
             {textLoading && <div className="text-center">
               {<CircularProgress color="success" />}
             </div>}
@@ -235,7 +243,6 @@ export const Chatroom = () => {
             })
             }
           </div>
-
           {
             selectedUser.length !== 0 &&
             <div className="position-relative send-div">
