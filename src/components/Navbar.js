@@ -38,25 +38,25 @@ export const Navbar = () => {
         <AppBar position="static">
           <Toolbar>
 
-            <div className='sm-dev' onClick={() => {
-              setDrawer(drawer ? false : true)
-            }}>
+            <div className='sm-dev'>
               <IconButton
                 size="large"
                 edge="start"
                 color="inherit"
                 aria-label="menu"
                 sx={{ mr: 2 }}
+                onClick={() => {
+                  setDrawer(drawer ? false : true)
+                }}
               >
 
                 <MenuIcon />
               </IconButton>
             </div>
-            {/* <div className='nav-heading'> */}
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} className='nav-heading'>
               CHATROOM
             </Typography>
-            {/* </div> */}
+
             <div>
               <IconButton
                 size="large"

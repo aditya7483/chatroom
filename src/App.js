@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Login } from './components/Login';
 import { Chatroom } from './components/Chatroom';
 import { Navbar } from './components/Navbar';
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 function App() {
 
@@ -22,8 +22,8 @@ function App() {
         return res.json()
       })
         .then(data => {
-          console.log(data)
-          nav('/chat')
+          // console.log(data)
+          nav('/')
         })
         .catch(err => {
           window.localStorage.removeItem('auth-token')
@@ -38,8 +38,8 @@ function App() {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/chat" element={<Chatroom />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Chatroom />} />
       </Routes>
     </>
   );

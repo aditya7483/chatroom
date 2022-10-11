@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import io from 'socket.io-client'
 import SendIcon from '@mui/icons-material/Send';
 import './Chatroom.css'
@@ -17,7 +17,6 @@ export const Chatroom = () => {
   const dispatch = useDispatch()
   const { setSelectedUser } = bindActionCreators(actionCreators, dispatch)
 
-  const bottomRef = useRef(null)
 
   const [mess, setMess] = useState('')
   const [data, setData] = useState([]);
@@ -25,7 +24,6 @@ export const Chatroom = () => {
   const [loading, setLoading] = useState(false);
   const [textLoading, setTextLoading] = useState(false);
   const [userData, setUserData] = useState({});
-  // const [selectedUser, setSelectedUser] = useState('');
   const [globalUsers, setGlobalUsers] = useState([]);
 
   const socket = io(link)
@@ -33,48 +31,46 @@ export const Chatroom = () => {
   let nav = useNavigate()
 
 
-  const fetchTexts = async (username) => {
+  const fetchTexts = (username) => {
     {
+      console.log('fetchTexts called')
       setTextLoading(true)
-      setData([])
-      try {
-        let res = await fetch(`https://chat74.herokuapp.com/api/chat/getTexts`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': "application/json",
-            'auth-token': authToken
-          },
-          body: JSON.stringify({
-            from: userData.username,
-            to: username
-          })
-        })
-        let jsonres = await res.json();
-        setSelectedUser(username)
-        setTextLoading(false)
-        setData(jsonres.data);
-        // console.log(jsonres)
-      } catch (err) {
-        setTextLoading(false)
-        console.log(err)
-      }
-    }
-  }
 
-  const fetchUserData = async () => {
-    try {
-      let res = await fetch(`https://chat74.herokuapp.com/api/auth/getUser`, {
-        method: 'GET',
+      fetch(`https://chat74.herokuapp.com/api/chat/getTexts`, {
+        method: 'POST',
         headers: {
           'Content-Type': "application/json",
           'auth-token': authToken
-        }
-      })
-      let data = await res.json();
-      setUserData(data);
-    } catch (err) {
-      console.log(err)
+        },
+        body: JSON.stringify({
+          from: userData.username,
+          to: username
+        })
+      }).then(res => { return res.json() })
+        .then(jsonres => {
+          setTextLoading(false)
+          setData(jsonres.data);
+        })
+        .catch((err) => {
+          setTextLoading(false)
+          console.log(err)
+        })
+
     }
+  }
+
+  const fetchUserData = () => {
+
+    fetch(`https://chat74.herokuapp.com/api/auth/getUser`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': "application/json",
+        'auth-token': authToken
+      }
+    }).then(res => { return res.json() }).then(data => { setUserData(data); })
+      .catch((err) => {
+        console.log(err)
+      })
   }
   const fetchGlobalUsers = async () => {
     try {
@@ -87,6 +83,7 @@ export const Chatroom = () => {
           }
         })
       let data = await res.json();
+      setLoading(false)
       setGlobalUsers(data);
     } catch (err) { console.log(err) }
   }
@@ -94,41 +91,45 @@ export const Chatroom = () => {
   useEffect(() => {
 
     if (!authToken || authToken === 'undefined') {
-      nav('/')
+      nav('/login')
     }
-    else {
-      if (selectedUser === '') {
-        setLoading(true)
-        fetchUserData()
-        fetchGlobalUsers()
-        setLoading(false)
-      }
-      else {
-        fetchTexts(selectedUser)
-      }
+    else if (selectedUser.length === 0) {
+      setLoading(true)
+      fetchUserData()
+      fetchGlobalUsers()
     }
-  }, [selectedUser]);
+  }, []);
+
+  useEffect(() => {
+    if (selectedUser.length > 0) {
+      fetchTexts(selectedUser)
+    }
+  }, [selectedUser])
 
   const handleUserClick = (username) => {
+    setData([])
+    setSelectedUser(username)
     fetchTexts(username)
-    let obj = { to: username }
-    changeAlert(obj, false)
+    var objDiv = document.getElementById("texts-div");
+    objDiv.scrollTop = objDiv.scrollHeight;
+    // let obj = { to: username }
+    // changeAlert(obj, false)
   }
 
-  const changeAlert = (obj, val) => {
-    let index = globalUsers.findIndex((ele) => { return ele.username === obj.to })
-    let newObj = globalUsers;
-    newObj[index].messAlert = val;
-    setGlobalUsers(newObj);
-  }
+  // const changeAlert = (obj, val) => {
+  //   let index = globalUsers.findIndex((ele) => { return ele.username === obj.to })
+  //   let newObj = globalUsers;
+  //   newObj[index].messAlert = val;
+  //   setGlobalUsers(newObj);
+  // }
 
   socket.on('messageRecieve', (obj) => {
     if (obj.to === userData.username && obj.from === selectedUser) {
       setData(data.concat(obj))
     }
-    else {
-      changeAlert(obj, true)
-    }
+    // else if (obj.to === userData.username && obj.from !== selectedUser) {
+    //   changeAlert(obj, true)
+    // }
   })
 
   socket.on('messageError', (err) => {
@@ -150,7 +151,6 @@ export const Chatroom = () => {
       _id: Math.random().toString()
     }
     setData(data.concat(newData))
-    // bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
     var objDiv = document.getElementById("texts-div");
     objDiv.scrollTop = objDiv.scrollHeight;
     setMess('')
@@ -257,6 +257,7 @@ export const Chatroom = () => {
           }
         </div>
       </div>
+      {/* <button onClick={() => { console.log(selectedUser) }}>click</button> */}
     </div>
   )
 }

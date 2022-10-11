@@ -23,9 +23,14 @@ export const Login = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true)
-    if (fields.username.length < 5 || fields.username.length < 5) {
-      setErrors('The username and password must contain atleast 5 characters')
+
+    if (!isValidEmail(fields.email)) {
       setLoading(false)
+      setErrors('Please Enter a valid email')
+    }
+    else if (fields.username.length < 5 || fields.password.length < 5) {
+      setLoading(false)
+      setErrors('The username and password must contain atleast 5 characters')
     }
     else {
       let res = await fetch('https://chat74.herokuapp.com/api/auth/signup', {
@@ -64,7 +69,6 @@ export const Login = () => {
   }
 
   const getAuth = async () => {
-    // let res = await fetch('https://notes74.herokuapp.com/api/auth/login', {
     try {
       let res = await fetch('https://chat74.herokuapp.com/api/auth/login', {
         method: 'POST',
@@ -97,20 +101,8 @@ export const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (signup) {
-      if (isValidEmail(fields.email)) {
-        setLoading(true);
-        getAuth()
-      }
-      else {
-        setLoading(false)
-        setErrors('Please Enter a valid email')
-      }
-    }
-    else {
-      setLoading(true)
-      getAuth()
-    }
+    setLoading(true)
+    getAuth()
   }
 
   const isValidEmail = (email) => {
