@@ -107,9 +107,9 @@ export const Chatroom = () => {
   }, [selectedUser])
 
   const handleUserClick = (username) => {
-    setData([])
-    setSelectedUser(username)
+    // setData([])
     fetchTexts(username)
+    setSelectedUser(username)
     var objDiv = document.getElementById("texts-div");
     objDiv.scrollTop = objDiv.scrollHeight;
     // let obj = { to: username }
@@ -257,7 +257,7 @@ export const Chatroom = () => {
           }
         </div>
       </div>
-      {/* <button onClick={() => { console.log(selectedUser) }}>click</button> */}
+      <button onClick={() => { console.log(data) }}>click</button>
     </div>
   )
 }
