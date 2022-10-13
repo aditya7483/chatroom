@@ -6,6 +6,14 @@ export const setSelectedUser = (userData) => {
     })
   }
 }
+export const setData = (mess) => {
+  return (dispatch) => {
+    dispatch({
+      type: 'updateData',
+      payload: mess
+    })
+  }
+}
 export const setTextLoading = (val) => {
   return (dispatch) => {
     dispatch({
@@ -15,19 +23,6 @@ export const setTextLoading = (val) => {
   }
 }
 
-export const getData = (url) => {
-  return async (dispatch) => {
-
-    dispatch(getDataBegin())
-    try {
-      const res = await fetch(url)
-      const data = await res.json()
-      dispatch(getDataSuccess(data))
-    } catch (err) {
-      dispatch(getDataFailure(err))
-    }
-  }
-}
 export const getGlobalUsers = (url, authToken) => {
   return async (dispatch) => {
 

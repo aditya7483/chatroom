@@ -14,12 +14,13 @@ const link = 'https://chat74.herokuapp.com'
 export const Chatroom = () => {
 
   const selectedUser = useSelector(state => state.selectedUser)
+  const data = useSelector(state => state.data)
   const dispatch = useDispatch()
-  const { setSelectedUser } = bindActionCreators(actionCreators, dispatch)
+  const { setSelectedUser, setData } = bindActionCreators(actionCreators, dispatch)
 
 
   const [mess, setMess] = useState('')
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [textLoading, setTextLoading] = useState(false);
@@ -33,9 +34,6 @@ export const Chatroom = () => {
 
   const fetchTexts = (username) => {
     {
-      console.log('fetchTexts called')
-      setTextLoading(true)
-
       fetch(`https://chat74.herokuapp.com/api/chat/getTexts`, {
         method: 'POST',
         headers: {
@@ -43,8 +41,8 @@ export const Chatroom = () => {
           'auth-token': authToken
         },
         body: JSON.stringify({
-          from: userData.username,
-          to: username
+          from: username,
+          to: userData.username
         })
       }).then(res => { return res.json() })
         .then(jsonres => {
@@ -82,9 +80,9 @@ export const Chatroom = () => {
             'auth-token': authToken
           }
         })
-      let data = await res.json();
+      let dataa = await res.json();
       setLoading(false)
-      setGlobalUsers(data);
+      setGlobalUsers(dataa);
     } catch (err) { console.log(err) }
   }
 
@@ -107,11 +105,10 @@ export const Chatroom = () => {
   }, [selectedUser])
 
   const handleUserClick = (username) => {
-    // setData([])
-    fetchTexts(username)
+    setData([])
     setSelectedUser(username)
-    var objDiv = document.getElementById("texts-div");
-    objDiv.scrollTop = objDiv.scrollHeight;
+    // var objDiv = document.getElementById("texts-div");
+    // objDiv.scrollTop = objDiv.scrollHeight;
     // let obj = { to: username }
     // changeAlert(obj, false)
   }
@@ -125,7 +122,10 @@ export const Chatroom = () => {
 
   socket.on('messageRecieve', (obj) => {
     if (obj.to === userData.username && obj.from === selectedUser) {
-      setData(data.concat(obj))
+      setData([...data, obj])
+    }
+    else {
+
     }
     // else if (obj.to === userData.username && obj.from !== selectedUser) {
     //   changeAlert(obj, true)
@@ -150,7 +150,7 @@ export const Chatroom = () => {
       time: Date.now(),
       _id: Math.random().toString()
     }
-    setData(data.concat(newData))
+    setData([...data, newData])
     var objDiv = document.getElementById("texts-div");
     objDiv.scrollTop = objDiv.scrollHeight;
     setMess('')
@@ -257,7 +257,7 @@ export const Chatroom = () => {
           }
         </div>
       </div>
-      <button onClick={() => { console.log(data) }}>click</button>
+      {/* <button onClick={() => { console.log(data) }}>click</button> */}
     </div>
   )
 }
