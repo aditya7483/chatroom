@@ -20,7 +20,6 @@ export const Chatroom = () => {
 
 
   const [mess, setMess] = useState('')
-  // const [data, setData] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [textLoading, setTextLoading] = useState(false);
@@ -32,28 +31,28 @@ export const Chatroom = () => {
   let nav = useNavigate()
 
 
-  const fetchTexts = (username) => {
+  const fetchTexts = async (username) => {
     {
-      fetch(`https://chat74.herokuapp.com/api/chat/getTexts`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': "application/json",
-          'auth-token': authToken
-        },
-        body: JSON.stringify({
-          from: username,
-          to: userData.username
+      try {
+        let res = await fetch(`https://chat74.herokuapp.com/api/chat/getTexts`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': "application/json",
+            'auth-token': authToken
+          },
+          body: JSON.stringify({
+            from: username,
+            to: userData.username
+          })
         })
-      }).then(res => { return res.json() })
-        .then(jsonres => {
-          setTextLoading(false)
-          setData(jsonres.data);
-        })
-        .catch((err) => {
-          setTextLoading(false)
-          console.log(err)
-        })
+        let jsonres = await res.json()
+        setData([...jsonres.data]);
+        setTextLoading(false)
 
+      } catch (err) {
+        setTextLoading(false)
+        console.log(err)
+      }
     }
   }
 
@@ -106,6 +105,7 @@ export const Chatroom = () => {
 
   const handleUserClick = (username) => {
     setData([])
+    setTextLoading(true)
     setSelectedUser(username)
     // var objDiv = document.getElementById("texts-div");
     // objDiv.scrollTop = objDiv.scrollHeight;
@@ -121,7 +121,7 @@ export const Chatroom = () => {
   // }
 
   socket.on('messageRecieve', (obj) => {
-    if (obj.to === userData.username && obj.from === selectedUser) {
+    if (obj.to === selectedUser && obj.from === userData.username && !textLoading) {
       setData([...data, obj])
     }
     else {
@@ -234,7 +234,7 @@ export const Chatroom = () => {
                 <p style={{ color: 'dimgray' }}>Please select a user to connect with them</p>
               </div>
             }
-            {data.map(ele => {
+            {!textLoading && data.map(ele => {
               return <div key={ele._id} className={ele.from === userData.username ? "sent align-self-end textbox" : 'recieved align-self-start textbox'}>
                 <p className='mb-0'>
                   {ele.message}
