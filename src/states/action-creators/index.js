@@ -6,6 +6,14 @@ export const setSelectedUser = (userData) => {
     })
   }
 }
+export const setUserData = (userData) => {
+  return (dispatch) => {
+    dispatch({
+      type: 'setUser',
+      payload: userData
+    })
+  }
+}
 export const setData = (mess) => {
   return (dispatch) => {
     dispatch({

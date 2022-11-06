@@ -3,12 +3,16 @@ import { Login } from './components/Login';
 import { Chatroom } from './components/Chatroom';
 import { Navbar } from './components/Navbar';
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { actionCreators } from './states'
 
 function App() {
 
   let nav = useNavigate()
   const link = 'http://localhost:3001'
-
+  const dispatch = useDispatch()
+  const { setUserData } = bindActionCreators(actionCreators, dispatch)
   useEffect(() => {
     let authToken = window.localStorage.getItem('auth-token')
     if (authToken && authToken !== 'undefined') {
@@ -21,8 +25,8 @@ function App() {
       }).then(res => {
         return res.json()
       })
-        .then(data => {
-          // console.log(data)
+        .then((data) => {
+          setUserData(data)
           nav('/')
         })
         .catch(err => {

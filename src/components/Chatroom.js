@@ -15,6 +15,7 @@ export const Chatroom = () => {
 
   const selectedUser = useSelector(state => state.selectedUser)
   const data = useSelector(state => state.data)
+  const userData = useSelector(state => state.userData)
   const dispatch = useDispatch()
   const { setSelectedUser, setData } = bindActionCreators(actionCreators, dispatch)
 
@@ -23,7 +24,6 @@ export const Chatroom = () => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [textLoading, setTextLoading] = useState(false);
-  const [userData, setUserData] = useState({});
   const [globalUsers, setGlobalUsers] = useState([]);
 
   const socket = io(link)
@@ -56,19 +56,6 @@ export const Chatroom = () => {
     }
   }
 
-  const fetchUserData = () => {
-
-    fetch(`https://chat74.herokuapp.com/api/auth/getUser`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': "application/json",
-        'auth-token': authToken
-      }
-    }).then(res => { return res.json() }).then(data => { setUserData(data); })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
   const fetchGlobalUsers = async () => {
     try {
       let res = await fetch(`https://chat74.herokuapp.com/api/auth/getGlobalUsers`,
@@ -92,7 +79,6 @@ export const Chatroom = () => {
     }
     else if (selectedUser.length === 0) {
       setLoading(true)
-      fetchUserData()
       fetchGlobalUsers()
     }
   }, []);
@@ -121,11 +107,8 @@ export const Chatroom = () => {
   // }
 
   socket.on('messageRecieve', (obj) => {
-    if (obj.to === selectedUser && obj.from === userData.username && !textLoading) {
+    if (obj.from === selectedUser && obj.to === userData.username && !textLoading) {
       setData([...data, obj])
-    }
-    else {
-
     }
     // else if (obj.to === userData.username && obj.from !== selectedUser) {
     //   changeAlert(obj, true)
